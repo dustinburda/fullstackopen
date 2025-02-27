@@ -1,5 +1,23 @@
 import { useState } from 'react'
 
+
+const Anecdote = ({anecdotes, votes, selected}) => {
+  return (
+    <>
+      {anecdotes[selected]}
+      <div> has {votes[selected]} votes</div>
+    </>
+  );
+}
+
+const Button = ({onClick, children}) => {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,7 +29,8 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
   const [selected, setSelected] = useState(0)
 
   const onClick = () => {
@@ -19,14 +38,30 @@ const App = () => {
     console.log(selected)
   }
 
+  const onVote = () => {
+    const newVotes = [...votes]
+    newVotes[selected] = newVotes[selected] + 1
+    setVotes(newVotes)
+  }
+
+  const findMostSelectedIndex = () => {
+    let maxVotes = Math.max(...votes)
+    let maxIndex = votes.indexOf(maxVotes);
+    
+    return maxIndex
+  }
+
+
   return (
     <div>
-      {anecdotes[selected]}
+      <h1>Anecdote of the day</h1>
+      <Anecdote anecdotes={anecdotes} votes={votes} selected={selected}/>
       <div>
-        <button onClick={onClick}>
-          next anecdote
-        </button>
+        <Button onClick={onVote}>vote</Button>
+        <Button onClick={onClick}>next anecdote</Button>
       </div>
+      <h1>Anecdote with most votes</h1>
+      <Anecdote anecdotes={anecdotes} votes={votes} selected={findMostSelectedIndex()}></Anecdote>
     </div>
   )
 }
