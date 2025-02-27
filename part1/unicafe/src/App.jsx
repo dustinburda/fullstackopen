@@ -36,7 +36,7 @@ const Statistics = ({good, neutral, bad}) => {
     </>
   );
 }
-
+ 
 
 function App() {
   const [good, setGood] = useState(0);
