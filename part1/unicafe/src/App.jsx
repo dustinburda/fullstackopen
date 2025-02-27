@@ -8,7 +8,7 @@ const Button = ( {onClick, children} ) => {
   )
 }
 
-const Statistic = ({text, num}) => {
+const StatisticLine = ({text, num}) => {
   
   return (
   <p> 
@@ -27,12 +27,12 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <>
-      <Statistic text={"good"} num={good}/>
-      <Statistic text={"neutral"} num={neutral}/>
-      <Statistic text={"bad"} num={bad}/>
-      <Statistic text={"all"} num={bad + good + neutral}/>
-      <Statistic text={"average"} num={(good - bad) / (bad + good + neutral)}/>
-      <Statistic text={"positive"} num={(good) / (bad + good + neutral) * 100}/>
+      <StatisticLine text={"good"} num={good}/>
+      <StatisticLine text={"neutral"} num={neutral}/>
+      <StatisticLine text={"bad"} num={bad}/>
+      <StatisticLine text={"all"} num={bad + good + neutral}/>
+      <StatisticLine text={"average"} num={(good - bad) / (bad + good + neutral)}/>
+      <StatisticLine text={"positive"} num={(good) / (bad + good + neutral) * 100}/>
     </>
   );
 }
