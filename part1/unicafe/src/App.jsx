@@ -9,8 +9,11 @@ const Button = ( {onClick, children} ) => {
 }
 
 const Statistic = ({text, num}) => {
+  
   return (
-  <p> {text}  {num}</p>
+  <p> 
+    {text}  {num} {text==="positive" && "%"}
+    </p>
   );
 }
 
@@ -44,6 +47,9 @@ function App() {
       <Statistic text={"good"} num={good}/>
       <Statistic text={"netural"} num={neutral}/>
       <Statistic text={"bad"} num={bad}/>
+      <Statistic text={"all"} num={bad + good + neutral}/>
+      <Statistic text={"average"} num={(good - bad) / (bad + good + neutral)}/>
+      <Statistic text={"positive"} num={(good) / (bad + good + neutral) * 100}/>
     </>
   )
 }
