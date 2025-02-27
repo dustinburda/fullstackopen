@@ -18,10 +18,17 @@ const Statistic = ({text, num}) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
+  if (good === 0 && bad === 0 && neutral === 0) {
+    return (
+      <div>No feedback given</div>
+    );
+  }
+
+
   return (
     <>
       <Statistic text={"good"} num={good}/>
-      <Statistic text={"netural"} num={neutral}/>
+      <Statistic text={"neutral"} num={neutral}/>
       <Statistic text={"bad"} num={bad}/>
       <Statistic text={"all"} num={bad + good + neutral}/>
       <Statistic text={"average"} num={(good - bad) / (bad + good + neutral)}/>
@@ -57,7 +64,7 @@ function App() {
       <Button onClick={onNeutral}>netural</Button>
       <Button onClick={onBad}>bad</Button>
       <h1>statistics</h1>
-      <Statistics good={good} netural={neutral} bad={bad}/>
+      <Statistics good={good} neutral={neutral} bad={bad}/>
     </>
   )
 }
