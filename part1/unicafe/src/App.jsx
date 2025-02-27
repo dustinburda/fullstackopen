@@ -17,6 +17,19 @@ const Statistic = ({text, num}) => {
   );
 }
 
+const Statistics = ({good, neutral, bad}) => {
+  return (
+    <>
+      <Statistic text={"good"} num={good}/>
+      <Statistic text={"netural"} num={neutral}/>
+      <Statistic text={"bad"} num={bad}/>
+      <Statistic text={"all"} num={bad + good + neutral}/>
+      <Statistic text={"average"} num={(good - bad) / (bad + good + neutral)}/>
+      <Statistic text={"positive"} num={(good) / (bad + good + neutral) * 100}/>
+    </>
+  );
+}
+
 
 function App() {
   const [good, setGood] = useState(0);
@@ -44,12 +57,7 @@ function App() {
       <Button onClick={onNeutral}>netural</Button>
       <Button onClick={onBad}>bad</Button>
       <h1>statistics</h1>
-      <Statistic text={"good"} num={good}/>
-      <Statistic text={"netural"} num={neutral}/>
-      <Statistic text={"bad"} num={bad}/>
-      <Statistic text={"all"} num={bad + good + neutral}/>
-      <Statistic text={"average"} num={(good - bad) / (bad + good + neutral)}/>
-      <Statistic text={"positive"} num={(good) / (bad + good + neutral) * 100}/>
+      <Statistics good={good} netural={neutral} bad={bad}/>
     </>
   )
 }
