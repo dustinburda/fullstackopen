@@ -37,7 +37,7 @@ const Course = ({course}) => {
       <Sum parts={course.parts}/>
     </>
   );
-}
+} 
 
 
 const App = () => {
