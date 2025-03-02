@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons.js'
-import axios from 'axios'
 
 
 const Form = ({persons, setPersons}) => {
@@ -9,6 +8,7 @@ const Form = ({persons, setPersons}) => {
 
   const addNewPerson = () => {
     const index = persons.findIndex(person => person.name === newName);
+
     if ( index != -1 ) {
       if (!window.confirm(`${newName} has already been added to the phonenook, replace the old number with a new one?`))
         return;
@@ -40,10 +40,10 @@ const Form = ({persons, setPersons}) => {
       id: String(persons.length + 1)
     }
 
-   personService.create(newPerson)
-                .then( response =>
+    personService.create(newPerson)
+                 .then( response =>
                     setPersons([...persons, newPerson])
-                )
+                  )
   }
 
   return (
