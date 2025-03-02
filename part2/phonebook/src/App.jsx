@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import personService from './services/persons.js'
 import axios from 'axios'
 
 
@@ -6,31 +7,49 @@ const Form = ({persons, setPersons}) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
+  const addNewPerson = () => {
+    const index = persons.findIndex(person => person.name === newName);
+    if ( index != -1 ) {
+      if (!window.confirm(`${newName} has already been added to the phonenook, replace the old number with a new one?`))
+        return;
+
+      const newPerson = {
+        ...persons[index],
+        number: newNumber
+      }
+
+      personService.update(newPerson, newPerson.id)
+                   .then(data => setPersons(persons.map(person => newPerson.id === person.id ? data : person)))
+
+      return;
+    }
+
+    if (newName === "") {
+      alert(`Please provide a name!`);
+      return;
+    }
+
+    if (newNumber === "") {
+      alert(`Please provide a phone number!`);
+      return;
+    }
+
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+      id: String(persons.length + 1)
+    }
+
+   personService.create(newPerson)
+                .then( response =>
+                    setPersons([...persons, newPerson])
+                )
+  }
+
   return (
     <form onSubmit={(event) => {
       event.preventDefault();
-
-      if (persons.findIndex(person => person.name === newName) != -1 ) {
-        alert(`${newName} is already in the phonebook!`);
-        return;
-      }
-
-      if (newName === "") {
-        alert(`Please provide a name!`);
-        return;
-      }
-
-      if (newNumber === "") {
-        alert(`Please provide a phone number!`);
-        return;
-      }
-
-      const newPerson = {
-        name: newName,
-        phoneNumber: newNumber
-      }
-
-      setPersons([newPerson, ...persons]);
+      addNewPerson();
     }}>
       <div>
         name: <input type="text" value={newName} onChange={(event) => {
@@ -51,37 +70,44 @@ const Form = ({persons, setPersons}) => {
   );
 }
 
-const Person = ({person}) => {
+const Person = ({persons, setPersons, person}) => {
+  const deletePerson = (id) => {
+      personService.deletePerson(id)
+                   .then(data => setPersons(persons.filter(person => person.id !== id)))
+         
+    
+  }
+
   return (
-    <li key={person.name}>{person.name} {person.phoneNumber}</li>
+    <>
+      <li key={person.name}>{person.name} {person.number}</li>
+      <button style={{display: "inline"}} onClick={() => deletePerson(person.id)}>delete</button>
+    </>
   );
 }
 
-const PhoneBook = ({persons}) => {
+const PhoneBook = ({persons, setPersons}) => {
   return (
-    <ul>
-      {persons.map(person => <Person person={person} key={person.id}/>)}
+    <ul style={{listStyle: "none"}}>
+      {persons.map(person => <Person persons={persons} setPersons={setPersons} person={person} key={person.id}/>)}
     </ul>
   );
 }
 
 const App = () => {
-
-
-
   const [persons, setPersons] = useState([]) 
 
   const getHook = () => {
-    axios.get("http://localhost:3001/persons")
+   personService.getAll()
          .then(response => {
-          setPersons(response.data);
-         }, reason => {
-          console.log("Reason: ", reason);
+          setPersons(response);
          })
+         .catch(reason => [
+          console.log(reason)
+         ])
   };
 
   useEffect(getHook, []);
-
 
   const [filterValue, setFilterValue] = useState("")
 
@@ -99,7 +125,7 @@ const App = () => {
       </div>
       <Form persons={persons} setPersons={setPersons}/>
       <h2>Numbers</h2>
-      <PhoneBook persons={renderedPersons}/>
+      <PhoneBook persons={renderedPersons} setPersons={setPersons}/>
     </div>
   )
 }
