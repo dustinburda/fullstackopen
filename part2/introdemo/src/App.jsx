@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import noteService from './services/notes.js'
 import axios from 'axios'
 import Note from "./Note"
+import Notification from "./Notification"
+import Footer from './Footer'
 
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [note, setNote] = useState("")
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   useEffect(() => {
@@ -51,9 +54,13 @@ const App = () => {
                   setNotes(notes.map(note => note.id === id ? response : note))
                })
                .catch(error => {
-                alert(
-                  `the note '${note.content}' was already deleted from server`
-                )
+
+                setErrorMessage(`the note '${note.content}' was already deleted from server`);
+
+                setTimeout( ()=> {
+                  setErrorMessage(null);
+                }, 5000);
+
                 setNotes(notes.filter(n => n.id !== id))
               })
   }
@@ -61,6 +68,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <ul>
         {notesToShow.map((note) => {
             return (<Note note={note} toggleImportanceOf={toggleImportanceOf} key={note.id}/>);
@@ -76,6 +84,7 @@ const App = () => {
         <input type="text" value={note} onChange={handleNoteChange} placeholder="Enter a note here"/>
         <button type="">save</button>
       </form>
+      <Footer />
     </div>
   )
 }

@@ -1,8 +1,21 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons.js'
+import './index.css'
 
 
-const Form = ({persons, setPersons}) => {
+const Notification = ({notification}) => {
+    if (notification === null)
+      return
+
+    return (
+      <div className="notification">
+          {notification}
+      </div>
+    );
+}
+
+
+const Form = ({persons, setPersons, notification, setNotification}) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
@@ -10,7 +23,7 @@ const Form = ({persons, setPersons}) => {
     const index = persons.findIndex(person => person.name === newName);
 
     if ( index != -1 ) {
-      if (!window.confirm(`${newName} has already been added to the phonenook, replace the old number with a new one?`))
+      if (!window.confirm(`${newName} has already been added to the phonebook, replace the old number with a new one?`))
         return;
 
       const newPerson = {
@@ -41,9 +54,12 @@ const Form = ({persons, setPersons}) => {
     }
 
     personService.create(newPerson)
-                 .then( response =>
-                    setPersons([...persons, newPerson])
-                  )
+                 .then( response => {
+                    setNotification(`Added ${newPerson.name}`);
+                    setPersons([...persons, newPerson]);
+
+                    setTimeout( () => setNotification(null), 5000);
+                  })
   }
 
   return (
@@ -96,6 +112,8 @@ const PhoneBook = ({persons, setPersons}) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [notification, setNotification] = useState(null);
+
 
   const getHook = () => {
    personService.getAll()
@@ -123,7 +141,8 @@ const App = () => {
       <div>
         filter shown with <input value={filterValue} onChange={event => setFilterValue(event.target.value)} />
       </div>
-      <Form persons={persons} setPersons={setPersons}/>
+      <Notification notification={notification}/>
+      <Form persons={persons} setPersons={setPersons} notification={notification} setNotification={setNotification}/>
       <h2>Numbers</h2>
       <PhoneBook persons={renderedPersons} setPersons={setPersons}/>
     </div>
