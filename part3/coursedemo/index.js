@@ -1,27 +1,17 @@
+require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
+const Note = require('./models/note')
 
 const app = express()
 app.use(cors())
 app.use(express.static('dist'))
+app.use(bodyParser.json())
 
-let notes = [
-    {
-        id: "1",
-        content: "HTML is easy",
-        important: true
-    },
-    {
-        id: "2",
-        content: "Browser can execute only JavaScript",
-        important: false
-    },
-    {
-        id: "3",
-        content: "GET and POST are the most important methods of HTTP protocol",
-        important: true
-    }
-]
+
+
 
 app.get("/", (request, response) => {
     response.set({
@@ -32,11 +22,41 @@ app.get("/", (request, response) => {
 })
 
 app.get("/api/notes", (request, response) => {
-    response.set({
-        "Content-Type": "application/json"
+    console.log("Getting...")
+    let notes = []
+
+    Note.find({}).then(results => {
+        results.forEach(result => {
+            notes.push(result)
+        })
+        
+        response.set({
+            "Content-Type": "application/json"
+        })
+        response.send(JSON.stringify(notes))
     })
-    response.send(JSON.stringify(notes))
-    response.status(200)
+})
+
+app.post('/api/notes', (request, response) => {
+    console.log("In post");
+    const body = request.body;
+
+    console.log(request);
+
+    if(!body.content)
+        return response.status(400).json({error: 'content missing'});
+
+    const note = new Note({
+        content: body.content,
+        important: body.important || false
+    })
+
+    note.save().then(savedNote => {
+        response.set({
+            "Content-Type": "application/json"
+        })
+        response.send(JSON.stringify(savedNote))
+    })
 })
 
 

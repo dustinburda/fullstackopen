@@ -4,3 +4,6 @@
 .env
 Dockerfile
 fly.toml
+
+fly secrets set
+MONGODB_URI=`mongodb+srv://dustin99wii:5r99e0XxBzp21Yez@cluster0.lyw8f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`

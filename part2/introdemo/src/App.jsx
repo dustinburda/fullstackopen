@@ -17,6 +17,7 @@ const App = () => {
     noteService
       .getAll()
       .then(initialNotes => {
+        console.log(initialNotes)
         setNotes(initialNotes)
       })
       .catch(reason =>

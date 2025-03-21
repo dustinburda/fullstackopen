@@ -31,6 +31,8 @@ const Form = ({persons, setPersons, notification, setNotification}) => {
         number: newNumber
       }
 
+      console.log(newPerson)
+
       personService.update(newPerson, newPerson.id)
                    .then(data => setPersons(persons.map(person => newPerson.id === person.id ? data : person)))
 
@@ -50,7 +52,7 @@ const Form = ({persons, setPersons, notification, setNotification}) => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: String(persons.length + 1)
+      id: String(Math.ceil(Math.random() * 10000 + 1))
     }
 
     personService.create(newPerson)
@@ -105,7 +107,10 @@ const Person = ({persons, setPersons, person}) => {
 const PhoneBook = ({persons, setPersons}) => {
   return (
     <ul style={{listStyle: "none"}}>
-      {persons.map(person => <Person persons={persons} setPersons={setPersons} person={person} key={person.id}/>)}
+      {persons.map(person => {
+        return <Person persons={persons} setPersons={setPersons} person={person} key={person.id}/>
+      }
+      )}
     </ul>
   );
 }
